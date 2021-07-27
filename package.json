@@ -4,6 +4,11 @@
   "description": "Multipurpose bot",
   "main": "index.js",
   "repository": "https://github.com/WEBXTheDev/ZenorZ.git",
+  "engines": {
+    "node": "16.3.0",
+    "vscode": "^1.22.0",
+    "yarn" : "1.22.10"
+  },
   "author": "WEBXTheDev",
   "license": "yes",
   "private": true,
