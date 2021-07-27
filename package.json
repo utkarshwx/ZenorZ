@@ -1,0 +1,17 @@
+{
+  "name": "zenorz",
+  "version": "1.0.0",
+  "description": "Multipurpose bot",
+  "main": "index.js",
+  "repository": "https://github.com/WEBXTheDev/ZenorZ.git",
+  "author": "WEBXTheDev",
+  "license": "yes",
+  "private": true,
+  "dependencies": {
+    "discord.js": "^12.5.3",
+    "dotenv": "^10.0.0",
+    "moment": "^2.29.1",
+    "ms": "^2.1.3",
+    "weather-js": "^2.0.0"
+  }
+}
