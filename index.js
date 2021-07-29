@@ -11,13 +11,13 @@ client.once('ready', () => {
 	console.log('Ready!');
 	
     const activities =[
-        `servers:- ${client.guilds.cache.size}`,
-        `users:- ${client.guilds.cache.reduce((a, b) => a+b.memberCount, 0)}`
+        `in ${client.guilds.cache.size} servers`,
+        `from ${client.guilds.cache.reduce((a, b) => a+b.memberCount, 0)} users`
 
     ];
 
     var i=0;
-    setInterval(() => client.user.setActivity(`zhelp | ${activities[i++ % activities.length]}`, {type: 'LISTENING'}), 15000);
+    setInterval(() => client.user.setActivity(`zhelp ${activities[i++ % activities.length]}`, {type: 'LISTENING'}), 15000);
     
     //client.user.setActivity('<activity>', { type: 'LISTENING' });
 	
@@ -31,44 +31,81 @@ client.on('message', message => {
     const args = message.content.slice(prefix.length).trim().split(/ +/);
     const command = args.shift().toLowerCase();
 
-	if (command === 'userinfo')
+	if (command === 'userinfo' || command === 'whois')
 	{ 
 		const flags = {
-			DISCORD_EMPLOYEE: 'Discord Employee',
-			DISCORD_PARTNER: 'Discord Partner',
-			BUGHUNTER_LEVEL_1: 'Bug Hunter (Level 1)',
-			BUGHUNTER_LEVEL_2: 'Bug Hunter (Level 2)',
-			HYPESQUAD_EVENTS: 'HypeSquad Events',
-			HOUSE_BRAVERY: 'House of Bravery',
-			HOUSE_BRILLIANCE: 'House of Brilliance',
-			HOUSE_BALANCE: 'House of Balance',
-			EARLY_SUPPORTER: 'Early Supporter',
+			DISCORD_EMPLOYEE: '<:discordstaff:869933025025200208>',
+			DISCORD_PARTNER: '<:Partner:869933024605777982>',
+			BUGHUNTER_LEVEL_1: '<:bughunterlvl1:869933025432076298>',
+			BUGHUNTER_LEVEL_2: '<:bughunterlvl2:869933025167818753>',
+			HYPESQUAD_EVENTS: '<:hypesquadevent:869933025071362098>',
+			HOUSE_BRAVERY: '<:bravery:869933024945512530>',
+			HOUSE_BRILLIANCE: '<:brilliance:869933024781950986>',
+			HOUSE_BALANCE: '<:balance:869933024886816799>',
+			EARLY_SUPPORTER: '<:earlysupporter:869933025369145344>',
 			TEAM_USER: 'Team User',
 			SYSTEM: 'System',
 			VERIFIED_BOT: 'Verified Bot',
-			VERIFIED_DEVELOPER: 'Verified Bot Developer'
+			VERIFIED_DEVELOPER: '<:BotDeveloper:869933025033596928>',
 		};
-		const member = message.mentions.members.last() || message.member;
-		const roles = member.roles.cache.sort((a, b)=> b.position - a.position).map(role => role.toString()).slice(0, -1);
-		const userFlags = member.user.flags.toArray();
 
-		const uembed = new Discord.MessageEmbed()
-		.setThumbnail(member.user.displayAvatarURL({ dynamic : true}))
-		.setColor(colors.red)
-		.addField('User:-', [
-			`**Username:- ** ${member.user.username}#${member.user.discriminator}`,
-			`**ID:- ** ${member.id}`,
-			`**Flags:- ** ${userFlags.length ?  userFlags.map(flag => flags[flag]).join(', ') : 'None'}`,
-			`**CreatedAt:- ** ${moment(member.user.createdTimestamp).format('LT')}${moment(member.user.createdAt).format('LL')}(${moment(member.user.createdTimestamp).fromNow()})`,
-			`\u200b`
-		])
-		.addField('member:-',[
-			`**Highest:- ** ${member.roles.highest.id === message.guild.id ? 'None' : member.roles.highest.name}`,
-			`**Joined server:- ** ${moment(member.joinedAt).format('LL LTS')}`,
-			`**Hoisted role:- ** ${member.roles.hoist ? member.roles.hoist.name : 'None'}`,
-			`**Roles [${roles.length}]:- ** ${member.roles.name}`
-		])
-	message.channel.send(uembed);
+		const premiumtypes = {
+			0 : '',
+			1 : '',
+			2 : ''
+		};
+
+		const statuso = {
+			online : `online (<:online:869933025130078278>)`,
+			idle : `idle (<:idle:869933025046183977>)`,
+			dnd : `dnd (<:dnd:869933025180401675>)`,
+			offline : `offline (<:invincible:869933024651935776>)`
+		}
+		let target = args[0];
+				
+				let info;
+				const member = message.mentions.members.last() || message.guild.members.cache.get(target) || message.member;
+				const roles = member.roles.cache
+					.sort((a, b) => b.position - a.position)
+					.map(role => role.toString())
+					.slice(0, -1);
+				const userFlags = member.user.flags.toArray();
+
+				if (member.hasPermission('BAN_MEMBERS') && member.hasPermission('MUTE_MEMBERS') && member.hasPermission('DEAFEN_MEMBERS')){
+					info = 'MODERATOR'
+				}
+				if (member.hasPermission('ADMINISTRATOR')){
+					info = 'ADMINISTRATOR'
+				}
+				if (member.id === message.guild.ownerID){
+					info = 'OWNER'
+				}
+
+
+
+				const embed = new Discord.MessageEmbed()
+					.setThumbnail(member.user.displayAvatarURL({ dynamic: true, size: 512 }))
+					.setColor(member.displayHexColor || 'RED')
+					.setTitle(` ${member.user.username}#${member.user.discriminator}`)
+					.setFooter(`ID: ${member.id} || Acknowledgement: ${info || 'NONE'}`)
+					.addField(`**__USER__** `, [
+						`** BADGES** ${userFlags.length ? userFlags.map(flag => flags[flag]).join(', ') : 'None'}`,
+						//`** NITRO STATUS:** ${premiumtypes ? premiumTier.map(premiumTier => premiumtypes[premiumTier]) : 'NONE' }`
+						`** Avatar:** [Link to avatar](${member.user.displayAvatarURL({ dynamic: true })})`,
+						`** Time Created:** ${moment(member.user.createdTimestamp).format('LT')} ${moment(member.user.createdTimestamp).format('LL')} (${moment(member.user.createdTimestamp).fromNow()})`,
+						`** Status:** ${statuso[member.user.presence.status]}`,
+						`\u200b`
+					])
+					.addField('**__MEMBER__**', [
+						`** Server Join Date:** ${moment(member.joinedAt).format('LL LTS')}`,
+						`** Highest Role:** ${member.roles.highest.id === message.guild.id ? 'None' : member.roles.highest.name}`,
+						`** Hoist Role:** ${member.roles.hoist ? member.roles.hoist.name : 'None'}`,
+						`** Roles [${roles.length}]:** ${roles.join(', ')}`
+					]);
+					try{
+				return message.channel.send(embed);}
+				catch{
+				}message.channel.send('error');
 	}
 	if (command === 'membercount'){
 		const mcembed = new Discord.MessageEmbed()
@@ -78,7 +115,7 @@ client.on('message', message => {
 			.setFooter(message.guild.name)
 			message.channel.send(mcembed)
 	}
-    if(command === "serverinfo"){
+    if(command === "serverinfo"|| command === 'guild'){
         const filterLevels = {
             DISABLED: 'Off',
             MEMBERS_WITHOUT_ROLES: 'No Role',
@@ -109,27 +146,35 @@ client.on('message', message => {
             'us-south': 'US South'
         };
 
+		const flags = {
+			DISCORD_PARTNER: '<:Partner:869933024605777982>'
+		};
+
 		const roles = message.guild.roles.cache.sort((a, b) => b.position - a.position).map(role => role.toString());
 		const members = message.guild.members.cache;
 		const channels = message.guild.channels.cache;
 		const emojis = message.guild.emojis.cache;
+		const member = message.guild.owner;
+		const userFlags = member.user.flags.toArray();
 
 		const embed = new Discord.MessageEmbed()
-			.setDescription(`**Guild information for __${message.guild.name}__**`)
+			.setTitle(`**Guild information for __${message.guild.name}__**`)
 			.setColor('#00000')
+			.setImage(message.guild.splashURL({ dynamic : true}))
 			.setThumbnail(message.guild.iconURL({ dynamic: true }))
+			.setFooter(`ID: ${message.guild.id} || Region: ${regions[message.guild.region]}`)
 			.addField('**__General__**', [
-				`** Name:** ${message.guild.name}`,
-				`** ID:** ${message.guild.id}`,
-				`** Owner:** ${message.guild.owner.user.tag} (${message.guild.ownerID})`,
-				`** Region:** ${regions[message.guild.region]}`,
-				`** Boost Tier:** ${message.guild.premiumTier ? `Tier ${message.guild.premiumTier}` : 'None'}`,
+				`** Owner:** ${message.guild.owner.user.tag} (${message.guild.ownerID}) <:owner:869933024417050636>${userFlags.length ? userFlags.map(flag => flags[flag]) : " "}`,
+				`** Boost Tier:** ${message.guild.premiumTier ? `Tier ${message.guild.premiumTier}(Boosts ${message.guild.premiumSubscriptionCount})` : 'None'}`,
 				`** Explicit Filter:** ${filterLevels[message.guild.explicitContentFilter]}`,
 				`** Verification Level:** ${verificationLevels[message.guild.verificationLevel]}`,
 				`** Time Created:** ${moment(message.guild.createdTimestamp).format('LT')} ${moment(message.guild.createdTimestamp).format('LL')} (${moment(message.guild.createdTimestamp).fromNow()})`,
 				'\u200b'
 			])
 			.addField('**__Statistics__**', [
+				`${message.guild.partnered ? `partnered: <:partneredserverowner:869933025004240976>` : " "}`,
+				`${message.guild.verified ? 'verified: <:verifiedserver:870114960473194536>' : " "}`,
+				`maximum joins: ${message.guild.maximumMembers}`,				
 				`Role Count: ${roles.length}`,
 				`Emoji Count: ${emojis.size}`,
 				`Regular Emoji Count: ${emojis.filter(emoji => !emoji.animated).size}`,
@@ -137,17 +182,18 @@ client.on('message', message => {
 				`Member Count: ${message.guild.memberCount}`,
 				`Humans: ${members.filter(member => !member.user.bot).size}`,
 				`Bots: ${members.filter(member => member.user.bot).size}`,
-				`Text Channels: ${channels.filter(channel => channel.type === 'text').size}`,
-				`Voice Channels: ${channels.filter(channel => channel.type === 'voice').size}`,
-				`Boost Count: ${message.guild.premiumSubscriptionCount || '0'}`,
-				'\u200b'
-			])
-			.addField('**__Presence__**', [
-				`Online: ${members.filter(members => members.presence.status === 'online').size}`,
-				`Idle: ${members.filter(members => members.presence.status === 'idle').size}`,
-				`Do Not Disturb: ${members.filter(members => members.presence.status === 'dnd').size}`,
-				`Offline: ${members.filter(members => members.presence.status === 'offline').size}`,
-			])
+			],true)
+			.addField('**__Channels__**',[
+				`${message.guild.afkChannel ? `AFK channel: ${message.guild.afkChannelID}` : ' '} `,
+				`Text Channels: ${channels.filter(channel => channel.type === 'text').size} <:textchannel:869933024714846290>`,
+				`Voice Channels: ${channels.filter(channel => channel.type === 'voice').size} <:voicechannel:869933024895189012>`,
+				'\u200b',
+			    '**__Presence__**',  
+				`<:online:869933025130078278> ${members.filter(members => members.presence.status === 'online').size}`,
+				`<:idle:869933025046183977> ${members.filter(members => members.presence.status === 'idle').size}`,
+				`<:dnd:869933025180401675> ${members.filter(members => members.presence.status === 'dnd').size}`,
+				`<:invincible:869933024651935776> ${members.filter(members => members.presence.status === 'offline').size}`,
+			],true)
 			//.addField(`Roles [${roles.length - 1}]`, roles.length < 10 ? roles.join(', ') : roles.length > 10 ? this.client.utils.trimArray(roles) : 'None')
 			//.setTimestamp();
 		message.channel.send(embed);
