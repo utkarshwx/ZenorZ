@@ -6,3 +6,12 @@ ZenorZ is just another Discord bot, he is upgrading day by day. We are currently
 ### [Invite](https://bit.ly/ZenorZ-bot) • [Support](https://discord.gg/xmf3kx5bYk) 
 ## How do I report a bug or suggest a feature?
 Feel free to open an issue with your bug report or feature request, with as many details as possible. If you'd like to write a feature, please open an issue first for discussion. For help with the bot, please see join [**Discord**](https://discord.gg/xmf3kx5bYk).
+
+
+
+        __________ _   _  ___  ____   _____
+        |__  / ____| \ | |/ _ \|  _ \ |__  /
+          / /|  _| |  \| | | | | |_) |  / / 
+         / /_| |___| |\  | |_| |  _ <  / /_ 
+        /____|_____|_| \_|\___/|_| \_\/____|
+                                     
