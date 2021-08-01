@@ -81,6 +81,7 @@ client.on('message', async  message => {
                     name: `${namei}`,
                 reason: "Role needed for Support System"
             })
+			message.reply(`Role created with name ${namei}`);
 		}
 		
 	}
