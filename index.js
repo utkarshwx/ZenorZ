@@ -60,7 +60,7 @@ client.on('message', async  message => {
 			let Reason = args.slice(1).join(" ");
 			role1.delete({reason : `${Reason || `No reason provided`} `})
 			try {
-				message.channel.send(`Role has been deleted **${deleted.name}**`);
+				message.channel.send(`Role has been deleted **${role1}**`);
 			}
 			catch (e) {
 				console.log(e.stack);
