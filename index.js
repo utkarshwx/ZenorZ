@@ -12,12 +12,12 @@ client.once('ready', () => {
 	
     const activities =[
         `in ${client.guilds.cache.size} servers`,
-        `from ${client.guilds.cache.reduce((a, b) => a+b.memberCount, 0)} users`
-
+        `from ${client.guilds.cache.reduce((a, b) => a+b.memberCount, 0)} users`,
+		``
     ];
 
     var i=0;
-    setInterval(() => client.user.setActivity(`zhelp ${activities[i++ % activities.length]}`, {type: 'LISTENING'}), 15000);
+    setInterval(() => client.user.setActivity(`zhelp ${activities[i++ % activities.length]}`, {type: 'LISTENING'}), 10000);
     
     //client.user.setActivity('<activity>', { type: 'LISTENING' });
 	
@@ -25,11 +25,177 @@ client.once('ready', () => {
 
 
 
-client.on('message', message => {
+client.on('message', async  message => {
     if(!message.content.startsWith(prefix) || message.author.bot ) return;
 
     const args = message.content.slice(prefix.length).trim().split(/ +/);
     const command = args.shift().toLowerCase();
+
+
+
+	if (command === 'roleinfo'){
+        let role = args[0];
+        if (!role) return message.reply(`**HOW TO USE**\`:- ${prefix}roleinfo <Developers || 808245641254928414>\``);
+
+        let role1 = message.guild.roles.cache.find(roles => roles.name === args.slice(0).join(" ")) || message.guild.roles.cache.find(roles => roles.id === args.slice(0).join(" "))  /*message.guild.roles.cache.find(roles => roles === role)*/;
+        if(!role1) return message.channel.send('there is no such role');
+
+		let role2 = role1.permissions.toArray();
+        let embed = new Discord.MessageEmbed()
+        .setTitle(`Information about **__${role1.name}__**`)
+        .setDescription(`**RoleID:** ${role1.id}\n**Hoisted:** ${role1.hoist}\n**Mentionable:** ${role1.mentionable}\n**Created:** ${role1.createdAt.toDateString()}\n**ColorCode:** ${role1.hexColor}\n**Position:** ${role1.position}\n**Members: [${role1.members.size}]** ${role1.members.map(m => m.user)}\n**Permissions:** ${role2.slice(0, 10).join(', ')}`)
+        .setColor(role1.hexColor)
+        message.reply(embed);
+    }
+
+	if (command === 'deleterole'){
+		let role = args.slice(0).join(" ");
+        if (!role) return message.reply(`**HOW TO USE**\` ${prefix}delrole <@ || >\``);
+
+        let role1 = message.guild.roles.cache.find(roles => roles.name === args.slice(0).join(" ")) || message.guild.roles.cache.find(roles => roles.id === args.slice(0).join(" "));
+        if(!role1) return message.channel.send('there is no such role');
+
+		
+		else{
+			let Reason = args.slice(1).join(" ");
+			role1.delete({reason : `${Reason || `No reason provided`} `})
+			try {
+				message.channel.send(`Role has been deleted **${deleted.name}**`);
+			}
+			catch (e) {
+				console.log(e.stack);
+			}
+		}
+	}
+
+	if (command === 'createrole'){		
+
+		if (!message.member.hasPermission('MANAGE_ROLES')) return message.channel.send('Missing perms of manage roles');
+
+		
+			let nameii = args[0];
+			if (!nameii) return message.channel.send('Specify a name');
+			else {
+				let namei = args.slice(0).join(" ");
+				await message.guild.roles.create({
+                    name: `${namei}`,
+                reason: "Role needed for Support System"
+            })
+		}
+		
+	}
+
+	if (command === 'addrole'){
+		{
+			let userinfoget =
+				message.mentions.members.first() ||
+				message.guild.members.cache.get(args[0]) ||
+				message.guild.member(message.author);
+	
+			let rMember = message.guild.member(message.mentions.users.first()) || message.guild.members.cache.get(args[0]);
+	
+			if (!message.member.hasPermission("MANAGE_ROLES")) {
+				message.channel.send("You don't have the permissions to use this command!");
+			}
+	
+			else {
+	
+				if (!rMember)
+					return message.channel.send("Couldn't find that user.");
+	
+				let role = args.join(" ").slice(23);
+				if (!role)
+					return message.channel.send("Specify a role!");
+	
+				let gRole = message.guild.roles.cache.find(roles => roles.name === role) || message.guild.roles.cache.find(roles => roles.id === role);
+				if (!gRole)
+					return message.channel.send("Couldn't find that role.");
+	
+				if (rMember.roles.cache.has(gRole.id))
+					return message.channel.send("They already have that role.");
+	
+				else {
+					rMember.roles.add(gRole.id).catch(console.error);
+					const sembed = new Discord.MessageEmbed();
+					sembed
+						.addField(`Added Role!`, `Sucessfully added role <@&${gRole.id}> to ${rMember}`)
+						.setFooter(message.author.tag + ` • Thanks for using!`, message.author.displayAvatarURL({ dynamic: true }))
+						.setTimestamp()
+						.setColor(userinfoget.displayHexColor);
+	
+					try {
+						message.channel.send(`Added Role!`, `Sucessfully added role <@&${gRole.id}> to ${rMember}`);
+					}
+					catch (e) {
+						console.log(e.stack);
+					}
+				}
+			}}
+	}
+
+	if (command === 'color'){
+		let color = args[0];
+		if(!color) return message.reply(`\`\`\`**HOW TO USE** ${prefix}color #da0214\`\`\``);
+
+		else {
+			let embed = new Discord.MessageEmbed()
+			.setDescription(`**Hex:** ${color}`)
+			.setColor(color)
+			message.channel.send(embed);
+		}
+	}
+
+	if(command === 'removerole'){
+			let userinfoget =
+			message.mentions.members.first() ||
+			message.guild.members.cache.get(args[0]) ||
+			message.guild.member(message.author);
+	
+			let rMember = message.guild.member(message.mentions.users.first()) || message.guild.members.cache.get(args[0]);
+	
+			if (!message.member.hasPermission("MANAGE_ROLES")) {
+				message.reply("You don't have the permissions to use this command!");
+			}
+	
+			else {
+	
+				if (!rMember)
+					return message.channel.send("Couldn't find that user, yo.");
+	
+				let role = args.join(" ").slice(23);
+				if (!role)
+					return message.channel.send("Specify a role!");
+	
+				let gRole = message.guild.roles.cache.find(roles => roles.name === role) || message.guild.roles.cache.find(roles => roles.id === role);
+				if (!gRole)
+					return message.channel.send("Couldn't find that role.");
+	
+				if (!rMember.roles.cache.has(gRole.id))
+					return message.reply("They don't have that role.");
+	
+				else {
+					rMember.roles.remove(gRole.id).catch(console.error);
+					try {
+						message.channel.send(`Removed Role!`, `Sucessfully Removed role <@&${gRole.id}> to ${rMember}`);
+					}
+					catch (e) {
+						console.log(e.stack);
+					}
+				}}
+	}
+
+    if (command === 'serverroles'){
+
+		const role2 = message.guild.roles.cache
+			.sort((a, b) => b.position - a.position)
+			.map(role => role.toString())
+			.slice(0, 25);
+
+		let embed = new Discord.MessageEmbed()
+		.setDescription(role2)		
+		.setColor(colors.red)
+		await message.channel.send(embed)
+	}
 
 	if (command === 'userinfo' || command === 'whois')
 	{ 
@@ -71,7 +237,7 @@ client.on('message', message => {
 					.slice(0, -1);
 				const userFlags = member.user.flags.toArray();
 
-				if (member.hasPermission('BAN_MEMBERS') && member.hasPermission('MUTE_MEMBERS') && member.hasPermission('DEAFEN_MEMBERS')){
+				if (member.hasPermission('BAN_MEMBERS') || member.hasPermission('MUTE_MEMBERS') || member.hasPermission('DEAFEN_MEMBERS')){
 					info = 'MODERATOR'
 				}
 				if (member.hasPermission('ADMINISTRATOR')){
@@ -87,7 +253,7 @@ client.on('message', message => {
 					.setThumbnail(member.user.displayAvatarURL({ dynamic: true, size: 512 }))
 					.setColor(member.displayHexColor || 'RED')
 					.setTitle(` ${member.user.username}#${member.user.discriminator}`)
-					.setFooter(`ID: ${member.id} || Acknowledgement: ${info || 'NONE'}`)
+					.setFooter(`ID: ${member.id} || Acknowledgement: ${info || 'MEMBER'}`)
 					.addField(`**__USER__** `, [
 						`** BADGES** ${userFlags.length ? userFlags.map(flag => flags[flag]).join(', ') : 'None'}`,
 						//`** NITRO STATUS:** ${premiumtypes ? premiumTier.map(premiumTier => premiumtypes[premiumTier]) : 'NONE' }`
@@ -146,6 +312,13 @@ client.on('message', message => {
             'us-south': 'US South'
         };
 
+		const premiumtypes = {
+			0 : ' ',
+			1 : '<:serverlevel1:871438307362500698>',
+			2 : '<:serverlevel2:871438307106639893>',
+			3 : '<:serverlevel3:871438307001790515>'
+		};
+
 		const flags = {
 			DISCORD_PARTNER: '<:Partner:869933024605777982>'
 		};
@@ -160,12 +333,12 @@ client.on('message', message => {
 		const embed = new Discord.MessageEmbed()
 			.setTitle(`**Guild information for __${message.guild.name}__**`)
 			.setColor('#00000')
-			.setImage(message.guild.splashURL({ dynamic : true}))
+			.setImage(message.guild.splashURL({ dynamic : true, size : 4096}))
 			.setThumbnail(message.guild.iconURL({ dynamic: true }))
 			.setFooter(`ID: ${message.guild.id} || Region: ${regions[message.guild.region]}`)
 			.addField('**__General__**', [
 				`** Owner:** ${message.guild.owner.user.tag} (${message.guild.ownerID}) <:owner:869933024417050636>${userFlags.length ? userFlags.map(flag => flags[flag]) : " "}`,
-				`** Boost Tier:** ${message.guild.premiumTier ? `Tier ${message.guild.premiumTier}(Boosts ${message.guild.premiumSubscriptionCount})` : 'None'}`,
+				`** Boost Tier:** ${message.guild.premiumTier ? `Level ${message.guild.premiumTier}(Boosts ${message.guild.premiumSubscriptionCount}) ${premiumtypes[message.guild.premiumTier]}` : ' '}`,
 				`** Explicit Filter:** ${filterLevels[message.guild.explicitContentFilter]}`,
 				`** Verification Level:** ${verificationLevels[message.guild.verificationLevel]}`,
 				`** Time Created:** ${moment(message.guild.createdTimestamp).format('LT')} ${moment(message.guild.createdTimestamp).format('LL')} (${moment(message.guild.createdTimestamp).fromNow()})`,
@@ -230,7 +403,7 @@ client.on('message', message => {
 	}
 	}
 }
-	if(command === 'avatar'){
+	if(command === 'avatar' || command === 'av'){
 		let userinfoget =
 			message.mentions.members.first() ||
 			message.guild.members.cache.get(args[0]) ||
@@ -245,11 +418,6 @@ client.on('message', message => {
             dynamic: true
 			
         });
-		//av2 = target.displayAvatarURL({
-          //  size: 512,
-            //dynamic: true,
-			//format: 'png'
-		//});
 	let	av3 = target.displayAvatarURL({
             size: 512,
             dynamic: true,
@@ -265,41 +433,7 @@ client.on('message', message => {
 
 		message.channel.send(embed);
 	}
-    if (command === 'av'){
-		let userinfoget =
-			message.mentions.members.first() ||
-			message.guild.members.cache.get(args[0]) ||
-			message.guild.member(message.author);
-
- let        target = message.mentions.users.first();
-
-        if (!target)
-            target = message.author;
-        let avatarURL = target.displayAvatarURL({
-            size: 4096,
-            dynamic: true
-			
-        });
-		//av2 = target.displayAvatarURL({
-          //  size: 512,
-            //dynamic: true,
-			//format: 'png'
-		//});
-	let	av3 = target.displayAvatarURL({
-            size: 512,
-            dynamic: true,
-			format: 'gif'
-		});
-
-		const embed = new Discord.MessageEmbed()
-			.setImage(avatarURL)
-			.setColor(`#00000`)
-			.setTitle(`**Avatar of ${target.username} **`)
-			.setFooter(`Powered by Zenorz`)
-			.setDescription("[**WEBP**](" + avatarURL + ")" + " | [**GIF**](" + av3 + ")");
-
-		message.channel.send(embed);
-	}
+    
     if (command === 'embed'){
 	if (!message.member.hasPermission(["MANAGE_MESSAGES"])) return message.reply("**You Dont Have Permissions To USE! - [MANAGE_MESSAGES]**");
         let color = args[0];
@@ -496,13 +630,13 @@ client.on('message', message => {
            '`coinflip` , `weather`'
         ])
         .addField(':tools: Admin-Mod:' , [
-            '`ban` , `prune` , `kick`, `say`,`embed`'
+            '`ban` , `prune` , `kick`, `say`,`embed`, `deleterole`, `createrole`, `addrole`, `removerole`'
         ])
         //.addField(':wrench: Settings:', [
         //    '`setwlc` , `welcome-test`'
         //])
         .addField(':information_source: Information:' , [
-            '`avatar` , `serverinfo` , `userinfo`'
+            '`avatar` , `serverinfo` , `userinfo`, `roleinfo`'
         ])
         //.addField('<:hypesquadevents:780263122862080022> Fun:' , [
         //    '`8ball` , `cat` , `dog` , `enlarge` , `meme` , `neko` , `rps` , `waifu`'
