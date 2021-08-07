@@ -339,7 +339,7 @@ client.on('message', async  message => {
 			.setFooter(`ID: ${message.guild.id} || Region: ${regions[message.guild.region]}`)
 			.addField('**__General__**', [
 				`** Owner:** ${message.guild.owner.user.tag} (${message.guild.ownerID}) <:owner:869933024417050636>${userFlags.length ? userFlags.map(flag => flags[flag]) : " "}`,
-				`** Boost Tier:** ${message.guild.premiumTier ? `Level ${message.guild.premiumTier}(Boosts ${message.guild.premiumSubscriptionCount}) ${premiumtypes[message.guild.premiumTier]}` : ' '}`,
+				`${message.guild.premiumTier ? `** Boost Tier:**Level ${message.guild.premiumTier}(Boosts ${message.guild.premiumSubscriptionCount}) ${premiumtypes[message.guild.premiumTier]}` : ' '}`,
 				`** Explicit Filter:** ${filterLevels[message.guild.explicitContentFilter]}`,
 				`** Verification Level:** ${verificationLevels[message.guild.verificationLevel]}`,
 				`** Time Created:** ${moment(message.guild.createdTimestamp).format('LT')} ${moment(message.guild.createdTimestamp).format('LL')} (${moment(message.guild.createdTimestamp).fromNow()})`,
