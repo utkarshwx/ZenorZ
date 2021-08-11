@@ -218,7 +218,7 @@ client.on('message', async  message => {
 		.setColor(colors.red)
 		await message.channel.send(embed)
 	}
-	if (command === 'servers'){
+	if (command === 'serverswebx'){
 		message.reply(`**❯ Servers:** ${this.client.guilds.cache.size.toLocaleString()} `);
 	}
 
