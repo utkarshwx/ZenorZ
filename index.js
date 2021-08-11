@@ -219,7 +219,7 @@ client.on('message', async  message => {
 		await message.channel.send(embed)
 	}
 	if (command === 'serverswebx'){
-		message.reply(`**❯ Servers:** ${this.client.guilds.cache.size.toLocaleString()} `);
+		message.reply(`**❯ Servers:** ${client.guilds.cache.size} `);
 	}
 
 	if (command === 'userinfo' || command === 'whois')
