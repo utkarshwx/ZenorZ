@@ -10,18 +10,20 @@ require('dotenv').config();
 client.once('ready', () => {
 	console.log('Ready!');
 	
-    const activities =[
-        `in ${client.guilds.cache.size} servers`,
-        `from ${client.guilds.cache.reduce((a, b) => a+b.memberCount, 0)} users`,
-		``
-    ];
-
-    var i=0;
-    setInterval(() => client.user.setActivity(`zhelp ${activities[i++ % activities.length]}`, {type: 'LISTENING'}), 10000);
+    setInterval(() => client.user.setActivity(`zhelp `, {type: 'LISTENING'}), 10000);
     
     //client.user.setActivity('<activity>', { type: 'LISTENING' });
 	
 });
+
+client.on('guildMemberAdd', member => {
+	// Send the message to a designated channel on a server:
+	const channel = member.guild.channels.cache.find(ch => ch.id === '846118443601362965');
+	// Do nothing if the channel wasn't found on this server
+	if (!channel) return;
+	// Send the message, mentioning the member
+	channel.send(`Welcome to the server, ${member} make sure that you read rules in <#846117256987148411> and react too so that you can get access for other channels`);
+  });
 
 
 
@@ -32,20 +34,20 @@ client.on('message', async  message => {
     const command = args.shift().toLowerCase();
 
 	if (command === 'teambots' ){
-		if (message.author.id === '710336522196353045' || message.author.id === '746628803559817306') {
+		if (message.author.id === '710336522196353045' || message.author.id === '746628803559817306' || message.author.id === '848094499619864586') {
 	    const embed = new Discord.MessageEmbed()
-		.setDescription(` Included bots :\n   [Dyno](https://discord.com/oauth2/authorize?client_id=161660517914509312&scope=bot%20identify%20guilds%20applications.commands&response_type=code&redirect_uri=https://dyno.gg/return&permissions=2134207679&state=ekUtO8D8t2LH3AHZTtgRJ)
-		 [Skyra](https://discord.com/oauth2/authorize?client_id=266624760782258186&permissions=491121748&redirect_uri=https%3A%2F%2Fskyra.pw&response_type=code&scope=bot)  
-		 [Koya](https://discord.com/oauth2/authorize?client_id=276060004262477825&scope=bot%20applications.commands&permissions=2146954359&response_type=code&redirect_uri=https://koya.gg/callback) 
-		 [carl](https://discord.com/oauth2/authorize?&client_id=235148962103951360&scope=applications.commands+bot&permissions=2088234230&response_type=code&redirect_uri=https://carl.gg/api/server_auth) 
+		.setDescription(` Included bots :\n   [Dyno](https://discord.com/oauth2/authorize?client_id=161660517914509312&scope=bot%20identify%20guilds%20applications.commands&response_type=code&permissions=2134207679)
+		 [Skyra](https://discord.com/oauth2/authorize?client_id=266624760782258186&permissions=491121748&response_type=code&scope=bot)  
+		 [Koya](https://discord.com/oauth2/authorize?client_id=276060004262477825&scope=bot%20applications.commands&permissions=2146954359&response_type=code) 
+		 [carl](https://discord.com/oauth2/authorize?&client_id=235148962103951360&scope=applications.commands+bot&permissions=2088234230&response_type=code) 
 		[Owo](https://discordapp.com/oauth2/authorize?client_id=408785106942164992&permissions=1074120776&scope=bot) 
-		[Dank](https://discord.com/oauth2/authorize?client_id=270904126974590976&scope=bot%20applications.commands&permissions=105227086912&redirect_uri=https%3A%2F%2Fdankmemer.lol%2Flanding&response_type=code) 
+		[Dank](https://discord.com/oauth2/authorize?client_id=270904126974590976&scope=bot%20applications.commands&permissions=105227086912) 
 		[Karuta](https://discord.com/oauth2/authorize?client_id=646937666251915264&permissions=379969&scope=bot) 
-		[Unbleivaboat](https://discord.com/oauth2/authorize?client_id=292953664492929025&scope=bot%20applications.commands&permissions=829811966&response_type=code&redirect_uri=https://unbelievaboat.com/landing) 
-		[Rythm](https://discord.com/oauth2/authorize?client_id=235088799074484224&permissions=3457096&scope=bot+applications.commands+identify+guilds+email&response_type=code&redirect_uri=https%3A%2F%2Frythm.fm%2Fauth%2Fdiscord&state=eyJhbmFseXRpY3MiOnsicmVmZXJyZXIiOiJtYXJrZXRpbmctbmdpbngifSwicmVkaXJlY3QiOiJodHRwczovL3J5dGhtLmZtL2FwcD90aGFua3MifQ%3D%3D) 
+		[Unbleivaboat](https://discord.com/oauth2/authorize?client_id=292953664492929025&scope=bot%20applications.commands&permissions=829811966&response_type=code) 
+		[Rythm](https://discord.com/oauth2/authorize?client_id=235088799074484224&permissions=3457096&scope=bot+applications.commands+identify+guilds+email&response_type=code) 
 		[Fred](https://discord.com/oauth2/authorize?client_id=184405253028970496&scope=bot+identify&redirect_uri=https%3A%2F%2Ffredboat.com%2Fcallback%2Fmusic&response_type=code) 
-		[Groovy](https://discord.com/oauth2/authorize?scope=bot+applications.commands+identify+guilds+email&client_id=234395307759108106&redirect_uri=https%3A%2F%2Fgroovy.bot%2Fcallback&response_type=code&permissions=8) 
-		[Arcane](https://discord.com/oauth2/authorize?client_id=437808476106784770&scope=bot%20applications.commands&permissions=2146958847&redirect_uri=https://arcane.bot/support&response_type=code) `)
+		[Groovy](https://discord.com/oauth2/authorize?scope=bot+applications.commands+identify+guilds+email&client_id=234395307759108106&response_type=code&permissions=8) 
+		[Arcane](https://discord.com/oauth2/authorize?client_id=437808476106784770&scope=bot%20applications.commands&permissions=2146958847) `)
 		message.channel.send(embed);}
 		else return;
 	}
@@ -155,7 +157,7 @@ client.on('message', async  message => {
 
 	if (command === 'color'){
 		let color = args[0];
-		if(!color) return message.reply(`\`\`\`**HOW TO USE** ${prefix}color #da0214\`\`\``);
+		if(!color) return message.reply(`**HOW TO USE** ${prefix}color #da0214`);
 
 		else {
 			let embed = new Discord.MessageEmbed()
@@ -215,6 +217,9 @@ client.on('message', async  message => {
 		.setDescription(role2)		
 		.setColor(colors.red)
 		await message.channel.send(embed)
+	}
+	if (command === 'servers'){
+		message.reply(`**❯ Servers:** ${this.client.guilds.cache.size.toLocaleString()} `);
 	}
 
 	if (command === 'userinfo' || command === 'whois')
@@ -638,6 +643,7 @@ client.on('message', async  message => {
 		  message.channel.send(iembed);
 	}
 	if (command === 'help') {
+		message.channel.send('🔰 SLASH COMMANDS COMING SOON')
 		
         const embed = new Discord.MessageEmbed()
         .setTitle('ZENORZ Commands Interface')
