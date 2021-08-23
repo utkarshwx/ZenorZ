@@ -22,7 +22,12 @@ client.on('guildMemberAdd', member => {
 	// Do nothing if the channel wasn't found on this server
 	if (!channel) return;
 	// Send the message, mentioning the member
-	channel.send(`Welcome to the server, ${member} make sure that you read rules in <#846117256987148411> and react too so that you can get access for other channels`);
+	
+	const embed = new Discord.MessageEmbed()
+	.setColor('#00001')
+	.setDescription(`Welcome to the server, ${member} make sure that you read rules in <#846117256987148411>`)
+	.setImage('https://imgur.com/GZg0UwC')
+	channel.send(embed);
   });
 
 
@@ -68,6 +73,45 @@ client.on('message', async  message => {
         .setColor(role1.hexColor)
         message.reply(embed);
     }
+	if (command === 'nick'){
+
+		if (message.member.hasPermission("CHANGE_NICKNAME") && message.guild.id == '710336522196353045') return message.reply("you don't have perms");
+
+
+		if (!message.member.hasPermission("MANAGE_NICKNAMES" )) return message.reply("you don't have perms");
+        let target = args[0];
+		const member = message.mentions.members.last() || message.guild.members.cache.get(target) || message.member;
+        if (!member) return message.reply('Mention A User!');
+
+		let nick = args.slice(1).join(" ");
+        
+        if (!nick) return message.reply(`**HOW TO USE IT**:- \`znick <TAG || ID> <NICK>\``);
+        
+
+         try {
+             
+             member.setNickname(nick || null).then(mem => {
+            message.channel.send(mem.nickname ? `**${member.user.tag}**'s Nickname Set to **${mem.nickname}**` : `**${member.user.tag}**'s Nickname Set Back To Username **${mem.user.username}**`);
+        })
+        
+         } catch (err)
+            {
+                message.channel.send(`:no_entry_sign: **${err}**`)
+            }
+	}
+	if (command === 'sm' || command === 'slowmode'){
+		if (!args[0])
+      return message.channel.send(
+        `Specify the time in seconds`
+      );
+      
+    if (isNaN(args[0])) return message.channel.send(`That is not a number!`);
+    
+    message.channel.setRateLimitPerUser(args[0]);
+    message.channel.send(
+      `Set the slowmode of this channel too **${args[0]}**`
+    );
+	}
 
 	if (command === 'deleterole'){
 		let role = args.slice(0).join(" ");
@@ -219,7 +263,8 @@ client.on('message', async  message => {
 		await message.channel.send(embed)
 	}
 	if (command === 'serverswebx'){
-		message.reply(`**❯ Servers:** ${client.guilds.cache.size} `);
+		message.reply(`**❯ Servers:** ${client.guilds.cache.size} \n  **❯ Users:** ${client.guilds.cache.reduce((a, b) => a + b.memberCount, 0).toLocaleString()}`);
+		
 	}
 
 	if (command === 'userinfo' || command === 'whois')
@@ -656,7 +701,7 @@ client.on('message', async  message => {
            '`coinflip` , `weather`'
         ])
         .addField(':tools: Admin-Mod:' , [
-            '`ban` , `prune` , `kick`, `say`,`embed`, `deleterole`, `createrole`, `addrole`, `removerole`'
+            '`ban` , `prune` , `kick`, `say`,`embed`, `deleterole`, `createrole`, `addrole`, `removerole`, `nick`, `sm`'
         ])
         //.addField(':wrench: Settings:', [
         //    '`setwlc` , `welcome-test`'
