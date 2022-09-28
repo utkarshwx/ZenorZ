@@ -14,7 +14,7 @@
   "private": true,
   "dependencies": {
     "@discordjs/builders": "^0.8.2",
-    "@discordjs/opus": "^0.6.0",
+    "@discordjs/opus": "^0.8.0",
     "@discordjs/rest": "^0.1.0-canary.0",
     "@keyv/mongo": "^1.1.0",
     "axios": "^0.24.0",
