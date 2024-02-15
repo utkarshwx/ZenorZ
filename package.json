@@ -17,7 +17,7 @@
     "@discordjs/opus": "^0.8.0",
     "@discordjs/rest": "^0.1.0-canary.0",
     "@keyv/mongo": "^1.1.0",
-    "axios": "^0.24.0",
+    "axios": "^1.6.0",
     "cpu-stat": "^2.0.1",
     "discord-api-types": "^0.24.0",
     "discord-player": "^5.1.0",
